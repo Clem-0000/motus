@@ -19,7 +19,8 @@ const displayInput = () => {
     var input = document.createElement("input");
     input.type = "text"; // type de l'input
     input.id = i; // permet d'avoir un id différent pour chaque input pour pouvoir récupérer les valeurs
-    input.className = "test";
+    input.className = "inputMotus"; // permet de mettre un style sur l'input
+    input.maxLength = "1";
     container.appendChild(input);
     container.appendChild(document.createElement("br"));
   }
@@ -30,3 +31,13 @@ const displayInput = () => {
 const compareLetter = () => {
   // appeler la méthode display input pour afficher une nouvelle salve d'input. faire en sorte d'avoir value = lettre bien placé
 };
+
+document.addEventListener(
+  "keypress",
+  (event) => {
+    var name = event.key;
+    var code = event.code;
+    console.log(`Key pressed ${name} \r\n Key code value: ${code}`);
+  },
+  false
+);

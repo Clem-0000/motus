@@ -4,8 +4,16 @@
 .containerInput{
     background-color: green;
     padding: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 
-.test{
-    border-color: aqua;
+.inputMotus{
+    width: 68px;
+    height: 68px;
+    font-size:68px;
+    text-align:center;
+    margin: 10px;
+    border: none;
 }
