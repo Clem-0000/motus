@@ -3,9 +3,33 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="index.css" rel="stylesheet" />
     <title>Motus</title>
   </head>
   <body>
-    <h1 class="title">Motus</h1>
+    <div class="container">
+      <h1 class="title">Motus</h1>
+
+      <button type="button" onclick="displayInput()" class="buttonEnter">
+        Start
+      </button>
+      <div class="containerInput" id="containerInput">
+        <!-- peut être faire un input par lettre et afficher le nombre d'input par un foreach en fonction de la taille du mot-->
+        <!--
+           <input
+          type="text"
+          placeholder="Mot à Trouver"
+          class="inputMotus"
+          id="0"
+          maxlength="1"
+        />
+        -->
+      </div>
+
+      <button type="button" onclick="getValueSubmit()" class="buttonEnter">
+        Valider
+      </button>
+      <script type="text/javascript" src="motus.js"></script>
+    </div>
   </body>
 </html>
