@@ -1,5 +1,5 @@
-var wordToFind = "actuel";
-var arrayWordToFind = ["a", "c", "t", "u", "e", "l"];
+var wordToFind = "inanimes";
+var arrayWordToFind = wordToFind.split("");
 var userWord = [];
 var wordLength = wordToFind.length; // length of the word use for number of input to display
 const userChance = 6;
@@ -10,49 +10,89 @@ const colorForTab = {
   colorWrongPlace: "rgb(234 179 8)",
 };
 
-/**
- * récupère les valeurs saisies par l'utilisateur -> obsolete
- */
-const getValueSubmit = () => {
-  /* for (let i = 0; i < wordLength; i++) {
-    userWord.push(document.getElementById(i).value);
-  } */
-  console.log(userWord);
-};
+var compteurEnter = 0;
+const divToDisplayInput = [
+  "firstTry",
+  "secondTry",
+  "thirdTry",
+  "fourthTry",
+  "fifthTry",
+  "lastTry",
+];
 
-const displayInput = () => {
-  var container = document.getElementById("containerInput"); // on met l'ID de la div qui va contenir tous les inputs
+/**
+ ** permet d'afficher la ligne définitive lorsque l'utilisateur presse "entrer". ca permet de mettre les couleurs allouées à chaque lettre
+ */
+const displayLastInput = (colorToDisplay) => {
+  var container = document.getElementById(
+    "" + divToDisplayInput[compteurEnter] + ""
+  ); // on met l'ID de la div qui va contenir tous les inputs
   while (container.hasChildNodes()) {
     container.removeChild(container.lastChild);
   }
   for (i = 0; i < wordLength; i++) {
     var input = document.createElement("input");
     input.type = "text"; // type de l'input
-    input.id = i; // permet d'avoir un id différent pour chaque input pour pouvoir récupérer les valeurs
+    input.className = "inputMotus"; // permet de mettre un style sur l'input
+    input.maxLength = "1";
+    input.value = userWord[i] != undefined ? userWord[i] : null;
+    input.style.backgroundColor = colorToDisplay[i];
+    container.appendChild(input);
+    container.appendChild(document.createElement("br"));
+  }
+  //userWord = []; // remmet le mot saisie par l'utilisateur à zéro
+};
+
+const displayInput = () => {
+  var container = document.getElementById(
+    "" + divToDisplayInput[compteurEnter] + ""
+  ); // on met l'ID de la div qui va contenir tous les inputs
+
+  while (container.hasChildNodes()) {
+    container.removeChild(container.lastChild);
+  }
+  for (i = 0; i < wordLength; i++) {
+    var input = document.createElement("input");
+    input.type = "text"; // type de l'input
     input.className = "inputMotus"; // permet de mettre un style sur l'input
     input.maxLength = "1";
     input.value = userWord[i] != undefined ? userWord[i] : null;
     input.style.backgroundColor =
       userWord[i] != undefined
         ? colorForTab.colorBasic
-        : colorForTab.colorWrongValue;
+        : colorForTab.colorWrongValue; // obsolete, mettre valeur du dictionnaire
     container.appendChild(input);
     container.appendChild(document.createElement("br"));
   }
 };
 
-// faire fonction qui remet à 0 les inputs
-
+/**
+ * permet d'avoir la couleur relative à une lettre en fonction de sa présence dans le mot ou de sa bonne position
+ */
 const compareLetter = () => {
-  // appeler la méthode display input pour afficher une nouvelle salve d'input. faire en sorte d'avoir value = lettre bien placé
-  userWord.forEach((userLetter, index) => {
-    if (arrayWordToFind.includes(userLetter, index)) {
-      console.log(
-        "🚀 ~ file: motus.js ~ line 42 ~ userWord.forEach ~ userLetter",
-        userLetter
-      );
+  colorToDisplay = []; //? va contenir la couleur corespondante à chaque lettre bleu jaune rouge
+
+  userWord.forEach((userLetter, i) => {
+    if (
+      arrayWordToFind.find((elem, idx) => elem === userLetter && idx == i) ===
+      userLetter
+    ) {
+      colorToDisplay.push(colorForTab.colorGoodPlace);
+    } else if (
+      arrayWordToFind.find((elem) => elem === userLetter) === userLetter
+    ) {
+      colorToDisplay.push(colorForTab.colorWrongPlace);
+      // mettre couleur mauvaise place place
+    } else {
+      colorToDisplay.push(colorForTab.colorWrongValue);
+      //mettre couleur non présente dans le mot
     }
   });
+
+  displayLastInput(colorToDisplay);
+  compteurEnter += 1;
+  userWord = [];
+  displayInput();
 };
 
 /**
@@ -62,17 +102,21 @@ window.addEventListener("keydown", (event) => {
   if (
     event.key != "" &&
     event.code != "KeyM" &&
-    (userWord.length < wordLength || event.key == "Backspace") &&
+    (userWord.length < wordLength ||
+      event.key == "Backspace" ||
+      event.key == "Enter") &&
     (event.code.match("Key") ||
       event.key == "Backspace" ||
       event.code.match("Semicolon") ||
       event.key == "Enter")
-    // remove click value et autre saisie qu'un delete entrer ou une lettre
+    // remove click value et autre saisie qu'un Backspace, enter ou une lettre
   ) {
     if (event.key == "Backspace") {
       userWord.pop();
     } else if (event.key == "Enter") {
-      //call function compareLetter
+      if (userWord.length == wordLength) {
+        compareLetter();
+      }
     } else {
       userWord.push(event.key);
     }
