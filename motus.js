@@ -1,6 +1,7 @@
 var wordToFind = "inanimes";
 var arrayWordToFind = wordToFind.split("");
 var userWord = [];
+userWord.push(arrayWordToFind[0]);
 var wordLength = wordToFind.length; // length of the word use for number of input to display
 const userChance = 6;
 const colorForTab = {
@@ -40,7 +41,6 @@ const displayLastInput = (colorToDisplay) => {
     container.appendChild(input);
     container.appendChild(document.createElement("br"));
   }
-  //userWord = []; // remmet le mot saisie par l'utilisateur à zéro
 };
 
 const displayInput = () => {
@@ -56,11 +56,18 @@ const displayInput = () => {
     input.type = "text"; // type de l'input
     input.className = "inputMotus"; // permet de mettre un style sur l'input
     input.maxLength = "1";
-    input.value = userWord[i] != undefined ? userWord[i] : null;
-    input.style.backgroundColor =
-      userWord[i] != undefined
-        ? colorForTab.colorBasic
-        : colorForTab.colorWrongValue; // obsolete, mettre valeur du dictionnaire
+    if (i == 0) {
+      input.value = arrayWordToFind[0];
+      input.disabled;
+      input.style.backgroundColor = colorForTab.colorGoodPlace;
+    } else {
+      input.value = userWord[i] != undefined ? userWord[i] : null;
+      input.style.backgroundColor =
+        userWord[i] != undefined
+          ? colorForTab.colorBasic
+          : colorForTab.colorWrongValue; // obsolete, mettre valeur du dictionnaire
+    }
+
     container.appendChild(input);
     container.appendChild(document.createElement("br"));
   }
@@ -70,9 +77,10 @@ const displayInput = () => {
  * permet d'avoir la couleur relative à une lettre en fonction de sa présence dans le mot ou de sa bonne position
  */
 const compareLetter = () => {
-  colorToDisplay = []; //? va contenir la couleur corespondante à chaque lettre bleu jaune rouge
+  colorToDisplay = []; //? va contenir la couleur corespondante à chaque lettre : bleu jaune rouge
 
   userWord.forEach((userLetter, i) => {
+
     if (
       arrayWordToFind.find((elem, idx) => elem === userLetter && idx == i) ===
       userLetter
@@ -88,11 +96,27 @@ const compareLetter = () => {
       //mettre couleur non présente dans le mot
     }
   });
-
+  resultMotus();
   displayLastInput(colorToDisplay);
   compteurEnter += 1;
+  console.log(
+    "🚀 ~ file: motus.js ~ line 102 ~ compareLetter ~ compteurEnter",
+    compteurEnter
+  );
   userWord = [];
+  userWord.push(arrayWordToFind[0]);
   displayInput();
+};
+
+/**
+ * * permet d'envoyer l'utilisateur sur une page de victoire ou de défaite
+ */
+const resultMotus = () => {
+  if (compteurEnter < 6 && wordToFind == userWord.join("")) {
+    window.location.replace("http://127.0.0.1:5500/victoire.html");
+  } else if (compteurEnter == 5 && wordToFind != userWord.join("")) {
+    window.location.replace("http://127.0.0.1:5500/defaite.html");
+  }
 };
 
 /**
@@ -112,13 +136,19 @@ window.addEventListener("keydown", (event) => {
     // remove click value et autre saisie qu'un Backspace, enter ou une lettre
   ) {
     if (event.key == "Backspace") {
-      userWord.pop();
+      if (userWord.length > 1) {
+        userWord.pop();
+      }
     } else if (event.key == "Enter") {
       if (userWord.length == wordLength) {
         compareLetter();
       }
     } else {
       userWord.push(event.key);
+      console.log(
+        "🚀 ~ file: motus.js ~ line 129 ~ window.addEventListener ~ userWord",
+        userWord
+      );
     }
     displayInput();
     console.log(event);
